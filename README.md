@@ -10,6 +10,11 @@ python main.py
 
 OpenAPI Spec (Swagger UI) available at https://0.0.0.0:8888/api
 
+## Testing the Application
+```bash
+pip install pytest
+pytest
+```
 
 ## API Specification
 ### Routes
