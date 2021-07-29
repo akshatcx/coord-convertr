@@ -8,8 +8,8 @@ pip install -r requirements.txt
 python main.py
 ```
 
-Graphical User Interface (GUI) available at https://0.0.0.0:8888
-OpenAPI Spec (Swagger UI) available at https://0.0.0.0:8888/api
+- Graphical User Interface (GUI) available at https://0.0.0.0:8888
+- OpenAPI Spec (Swagger UI) available at https://0.0.0.0:8888/api
 
 ## Testing the Application
 ```bash
