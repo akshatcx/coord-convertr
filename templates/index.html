@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Coord Convertr</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+<body>
+	<section class="section">
+		<div class="container">
+			<h1 class="title">
+				coord-convertr v0.1.0
+			</h1>
+			<p class="subtitle">
+				Application to convert various formats of coordinates
+			</p>
+			<form method="post">
+				<div class="columns">
+					<div class="column">
+						<div class="field">
+							<div class="control">
+							  <textarea class="textarea" name="input_text" placeholder="Input Coordinates (in csv)" rows=12>{{  data['input_text'] }}</textarea>
+							</div>
+						</div>
+					</div>
+					<div class="column">
+						<!-- <div class="field"> -->
+							<!-- <div class="control"> -->
+							  <textarea class="textarea" placeholder="Converted Coordinates" disabled=true rows=12>{{  data['output_text'] }}</textarea>
+							<!-- </div> -->
+						<!-- </div> -->
+					</div>
+				</div>
+				<article class="message is-link">
+					<div class="message-body">
+					  Lat-Lon format: latitude, logitude
+					  <br>
+					  UTM format: easting, northing, zone_number, zone_letter
+					</div>
+				  </article>
+				<div class="field">
+					<div class="control">
+					  <label class="radio">
+						<input type="radio" name="conversion_type" value='ll2utm' {% if data['conversion_type'] == 'll2utm' %} checked {% endif %}>
+						Lat-Lon to UTM
+					  </label>
+					  <br>
+					  <label class="radio">
+						<input type="radio" name="conversion_type" value='utm2ll' {% if data['conversion_type'] == 'utm2ll' %} checked {% endif %}>
+						UTM to Lat-Lon
+					  </label>
+					</div>
+				  </div>
+				  <br>
+				<button class="button is-success is-small" onclick="this.classList.add('is-loading')" type="submit">Convert</button>
+			</form>
+		</div>
+	</section>
+	<footer class="footer" style="background-color: white;">
+		<div class="content container">
+			<p>© <strong>coord-convertr 2021</strong></p>
+		</div>
+	</footer>
+</body>
+</html>

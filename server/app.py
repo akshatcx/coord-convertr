@@ -1,9 +1,9 @@
 import utm
 from typing import List
 from pydantic import BaseModel
-from fastapi import FastAPI, Request, APIRouter
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI, APIRouter, Request, Form
 
 app = FastAPI(title="coord-convertr", version="0.1.0", docs_url="/api")
 templates = Jinja2Templates(directory="templates")
@@ -21,9 +21,8 @@ class UTMCoord(BaseModel):
     zone_letter: str
 
 
-# Routes
+# API Routes
 api_router = APIRouter()
-
 
 @api_router.post("/latlon-to-utm", response_model=List[UTMCoord], status_code=200)
 def latlon_to_utm(coords: List[LatLonCoord]):
@@ -52,14 +51,32 @@ def utm_to_latlon(coords: List[UTMCoord]):
     return latlons
 
 
-# @app.get("/", response_class=HTMLResponse)
-# def index(request: Request):
-#     return templates.TemplateResponse("index.html", {"request": request})
+# GUI Routes
+gui_router = APIRouter()
 
-# @app.post("/", response_class=HTMLResponse)
-# async def result(request: Request):
-#     data = await request.form()
-#     out = process(data)
-#     return templates.TemplateResponse("results.html", {"request": request, "result": out})
+@gui_router.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request, "data": {}})
 
+@gui_router.post("/", response_class=HTMLResponse)
+async def index(request: Request):
+    data = dict(await request.form())
+    all_converted = []
+    if data['conversion_type'] == 'll2utm':
+        dtypes = [float, float]
+        func = utm.from_latlon
+    
+    elif data['conversion_type'] == 'utm2ll':
+        dtypes = [float, float, int, str]
+        func = utm.to_latlon
+
+    for coord in data['input_text'].split('\n'):
+        payload = [dtype(param) for dtype, param in zip(dtypes, coord.split(','))]
+        converted = func(*payload)
+        all_converted.append(",".join([str(param) for param in converted]))
+
+    data['output_text'] = "\n".join(all_converted)
+    return templates.TemplateResponse("index.html", {"request": request, "data": data})
+
+app.include_router(gui_router, prefix="", tags=["gui"])
 app.include_router(api_router, prefix="/api", tags=["api"])
