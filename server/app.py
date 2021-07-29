@@ -24,6 +24,7 @@ class UTMCoord(BaseModel):
 # API Routes
 api_router = APIRouter()
 
+
 @api_router.post("/latlon-to-utm", response_model=List[UTMCoord], status_code=200)
 def latlon_to_utm(coords: List[LatLonCoord]):
     utms = []
@@ -54,29 +55,32 @@ def utm_to_latlon(coords: List[UTMCoord]):
 # GUI Routes
 gui_router = APIRouter()
 
+
 @gui_router.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "data": {}})
+
 
 @gui_router.post("/", response_class=HTMLResponse)
 async def index(request: Request):
     data = dict(await request.form())
     all_converted = []
-    if data['conversion_type'] == 'll2utm':
+    if data["conversion_type"] == "ll2utm":
         dtypes = [float, float]
         func = utm.from_latlon
-    
-    elif data['conversion_type'] == 'utm2ll':
+
+    elif data["conversion_type"] == "utm2ll":
         dtypes = [float, float, int, str]
         func = utm.to_latlon
 
-    for coord in data['input_text'].split('\n'):
-        payload = [dtype(param) for dtype, param in zip(dtypes, coord.split(','))]
+    for coord in data["input_text"].split("\n"):
+        payload = [dtype(param) for dtype, param in zip(dtypes, coord.split(","))]
         converted = func(*payload)
         all_converted.append(",".join([str(param) for param in converted]))
 
-    data['output_text'] = "\n".join(all_converted)
+    data["output_text"] = "\n".join(all_converted)
     return templates.TemplateResponse("index.html", {"request": request, "data": data})
+
 
 app.include_router(gui_router, prefix="", tags=["gui"])
 app.include_router(api_router, prefix="/api", tags=["api"])
