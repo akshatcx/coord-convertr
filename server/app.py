@@ -74,7 +74,7 @@ async def index(request: Request):
         func = utm.to_latlon
 
     for coord in data["input_text"].split("\n"):
-        payload = [dtype(param) for dtype, param in zip(dtypes, coord.split(","))]
+        payload = [dtype(param.strip()) for dtype, param in zip(dtypes, coord.split(","))]
         converted = func(*payload)
         all_converted.append(",".join([str(param) for param in converted]))
 
