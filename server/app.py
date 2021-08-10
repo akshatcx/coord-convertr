@@ -4,9 +4,12 @@ from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import FastAPI, APIRouter, Request, Form
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(title="coord-convertr", version="0.1.0", docs_url="/api")
 templates = Jinja2Templates(directory="templates")
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Models
 class LatLonCoord(BaseModel):
